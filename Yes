@@ -1,0 +1,1169 @@
+# To understand concept of Thread sleep () using JAVA, and to write simple code to implement the concept. Further develop a Java code to implement sorting application with concurrent thread and thread sleep function
+import java.util.Arrays;
+
+
+
+public class ParallelSort {
+
+    private static final int ARRAY_SIZE = 100;
+
+    private static final int NUM_THREADS = 4;
+
+
+
+    public static void main(String[] args) {
+
+        int[] array = createArray();
+
+        System.out.println("Before sorting: " + Arrays.toString(array));
+
+
+
+        Thread[] threads = new Thread[NUM_THREADS];
+
+        int segmentSize = ARRAY_SIZE / NUM_THREADS;
+
+
+
+        for (int i = 0; i < NUM_THREADS; i++) {
+
+            int startIndex = i * segmentSize;
+
+            int endIndex = (i == NUM_THREADS - 1) ? ARRAY_SIZE - 1 : (startIndex + segmentSize - 1);
+
+
+
+            threads[i] = new Thread(new SortTask(array, startIndex, endIndex));
+
+            threads[i].start();
+
+        }
+
+
+
+        // Wait for all threads to finish
+
+        for (Thread thread : threads) {
+
+            try {
+
+                thread.join();
+
+            } catch (InterruptedException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+
+
+
+        // Perform a final merge sort on the entire array
+
+        mergeSort(array, 0, ARRAY_SIZE - 1);
+
+
+
+        System.out.println("After sorting: " + Arrays.toString(array));
+
+    }
+
+
+
+    // Creates an array of random integers
+
+    private static int[] createArray() {
+
+        int[] array = new int[ARRAY_SIZE];
+
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+
+            array[i] = (int) (Math.random() * 400); // Generate random numbers between 0 and 400
+
+        }
+
+        return array;
+
+    }
+
+
+
+    // Recursive merge sort algorithm
+
+    private static void mergeSort(int[] array, int left, int right) {
+
+        if (left < right) {
+
+            int mid = (left + right) / 2;
+
+            mergeSort(array, left, mid);
+
+            mergeSort(array, mid + 1, right);
+
+            merge(array, left, mid, right);
+
+        }
+
+    }
+
+
+
+    // Merges two sorted halves of an array
+
+    private static void merge(int[] array, int left, int mid, int right) {
+
+        int[] temp = new int[right - left + 1];
+
+        int i = left, j = mid + 1, k = 0;
+
+
+
+        while (i <= mid && j <= right) {
+
+            if (array[i] <= array[j]) {
+
+                temp[k++] = array[i++];
+
+            } else {
+
+                temp[k++] = array[j++];
+
+            }
+
+        }
+
+
+
+        while (i <= mid) {
+
+            temp[k++] = array[i++];
+
+        }
+
+
+
+        while (j <= right) {
+
+            temp[k++] = array[j++];
+
+        }
+
+
+
+        System.arraycopy(temp, 0, array, left, temp.length);
+
+    }
+
+
+
+    // Runnable class to sort a segment of the array in a thread
+
+    static class SortTask implements Runnable {
+
+        private int[] array;
+
+        private int startIndex;
+
+        private int endIndex;
+
+
+
+        public SortTask(int[] array, int startIndex, int endIndex) {
+
+            this.array = array;
+
+            this.startIndex = startIndex;
+
+            this.endIndex = endIndex;
+
+        }
+
+
+
+        @Override
+_________________________
+question 2: Use Thread Sleep function on the above code and observe the output
+
+
+
+import java.util.Arrays;
+
+
+
+public class ParallelSort {
+
+    private static final int ARRAY_SIZE = 100;
+
+    private static final int NUM_THREADS = 4;
+
+
+
+    public static void main(String[] args) {
+
+        int[] array = createArray();
+
+        System.out.println("Before sorting: " + Arrays.toString(array));
+
+
+
+        Thread[] threads = new Thread[NUM_THREADS];
+
+        int segmentSize = ARRAY_SIZE / NUM_THREADS;
+
+
+
+        for (int i = 0; i < NUM_THREADS; i++) {
+
+            int startIndex = i * segmentSize;
+
+            int endIndex = (i == NUM_THREADS - 1) ? ARRAY_SIZE - 1 : (startIndex + segmentSize - 1);
+
+
+
+            // Assign a sleep duration based on the thread index
+
+            int sleepDuration = (i + 1) * 500; // Increase sleep time for each thread
+
+
+
+            threads[i] = new Thread(new SortTask(array, startIndex, endIndex, sleepDuration));
+
+            threads[i].start();
+
+        }
+
+
+
+        // Wait for all threads to finish
+
+        for (Thread thread : threads) {
+
+            try {
+
+                thread.join();
+
+            } catch (InterruptedException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+
+
+
+        // Perform a final merge sort on the entire array
+
+        mergeSort(array, 0, ARRAY_SIZE - 1);
+
+
+
+        System.out.println("After sorting: " + Arrays.toString(array));
+
+    }
+
+
+
+    // Creates an array of random integers
+
+    private static int[] createArray() {
+
+        int[] array = new int[ARRAY_SIZE];
+
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+
+            array[i] = (int) (Math.random() * 400); // Generate random numbers between 0 and 400
+
+        }
+
+        return array;
+
+    }
+
+
+
+    // Recursive merge sort algorithm
+
+    private static void mergeSort(int[] array, int left, int right) {
+
+        if (left < right) {
+
+            int mid = (left + right) / 2;
+
+            mergeSort(array, left, mid);
+
+            mergeSort(array, mid + 1, right);
+
+            merge(array, left, mid, right);
+
+        }
+
+    }
+
+
+
+    // Merges two sorted halves of an array
+
+    private static void merge(int[] array, int left, int mid, int right) {
+
+        int[] temp = new int[right - left + 1];
+
+        int i = left, j = mid + 1, k = 0;
+
+
+
+        while (i <= mid && j <= right) {
+
+            if (array[i] <= array[j]) {
+
+                temp[k++] = array[i++];
+
+            } else {
+
+                temp[k++] = array[j++];
+
+            }
+
+        }
+
+
+
+        while (i <= mid) {
+
+            temp[k++] = array[i++];
+
+        }  
+
+
+
+        while (j <= right) {
+
+            temp[k++] = array[j++];
+
+        }
+
+
+
+        System.arraycopy(temp, 0, array, left, temp.length);
+
+    }
+
+
+
+    // Runnable class to sort a segment of the array in a thread with a sleep delay
+
+    static class SortTask implements Runnable {
+
+        private int[] array;
+
+        private int startIndex;
+
+        private int endIndex;
+
+        private int sleepDuration;
+
+
+
+        public SortTask(int[] array, int startIndex, int endIndex, int sleepDuration) {
+
+            this.array = array;
+
+            this.startIndex = startIndex;
+
+            this.endIndex = endIndex;
+
+            this.sleepDuration = sleepDuration;
+
+        }
+
+
+
+        @Override
+
+        public void run() {
+
+            try {
+
+                // Each thread sleeps for a different duration before sorting
+
+                Thread.sleep(sleepDuration);
+
+
+
+                // Sort the segment of the array
+
+                Arrays.sort(array, startIndex, endIndex + 1);
+
+
+
+                // Indicate completion of sorting for the current segment
+
+                System.out.println("Sorted segment from index " + startIndex + " to " + endIndex 
+
+                                   + " after sleeping for " + sleepDuration + "ms");
+
+            } catch (InterruptedException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+
+    }
+
+}
+
+        public void run() {
+
+            // Sort the segment of the array
+
+            Arrays.sort(array, startIndex, endIndex + 1); // EndIndex is inclusive, hence +1
+
+        }
+
+    }
+
+}
+
+AIM
+
+Writing a program in java to implement priority in multithreading.
+
+Theory/Procedure/Algorithm
+import java.lang.*;
+
+
+
+class Priority extends Thread {
+
+    public void run() {
+
+        System.out.println("Inside run method");
+
+    }
+
+
+
+    public static void main(String[] args) {
+
+
+
+        Priority t1 = new Priority();
+
+        Priority t2 = new Priority();
+
+        Priority t3 = new Priority();
+
+
+
+        System.out.println("t1 thread priority : "
+
+                + t1.getPriority());
+
+
+
+        System.out.println("t2 thread priority : "
+
+                + t2.getPriority());
+
+        System.out.println("t3 thread priority : "
+
+                + t3.getPriority());
+
+
+
+        t1.setPriority(2);
+
+        t2.setPriority(5);
+
+        t3.setPriority(8);
+
+
+
+        System.out.println("t1 thread priority : "
+
+                + t1.getPriority());
+
+        System.out.println("t2 thread priority : "
+
+                + t2.getPriority());
+
+        System.out.println("t3 thread priority : "
+
+                + t3.getPriority());
+
+
+
+        System.out.println(
+
+                "Currently Executing Thread : "
+
+                        + Thread.currentThread().getName());
+
+        System.out.println(
+
+                "Main thread priority : "
+
+                        + Thread.currentThread().getPriority());
+
+        Thread.currentThread().setPriority(10);
+
+        System.out.println(
+
+                "Main thread priority : "
+
+                        + Thread.currentThread().getPriority());
+
+    }
+
+
+}
+
+AIM
+
+#Writing a program in JAVA to find “Prime and Palindrome”
+
+Numbers
+
+class PrimeThread extends Thread {
+
+    @Override
+
+    public void run() {
+
+        System.out.println("Prime numbers between 0 and 100:");
+
+        for (int i = 2; i <= 100; i++) {
+
+            if (isPrime(i)) {
+
+                System.out.print(i + " ");
+
+            }
+
+        }
+
+        System.out.println();
+
+    }
+
+
+
+    private boolean isPrime(int n) {
+
+        if (n <= 1) return false;
+
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+
+            if (n % i == 0) return false;
+
+        }
+
+        return true;
+
+    }
+
+}
+
+
+
+class PalindromeThread extends Thread {
+
+    @Override
+
+    public void run() {
+
+        System.out.println("Palindrome numbers between 10 and 1000:");
+
+        for (int i = 10; i <= 1000; i++) {
+
+            if (isPalindrome(i)) {
+
+                System.out.print(i + " ");
+
+            }
+
+        }
+
+        System.out.println();
+
+    }
+
+
+
+    private boolean isPalindrome(int n) {
+
+        int original = n, reverse = 0;
+
+        while (n > 0) {
+
+            reverse = reverse * 10 + (n % 10);
+
+            n /= 10;
+
+        }
+
+        return original == reverse;
+
+    }
+
+}
+
+
+
+public class SequentialThreads {
+
+    public static void main(String[] args) {
+
+        // Creating both threads
+
+        PrimeThread primeThread = new PrimeThread();
+
+        PalindromeThread palindromeThread = new PalindromeThread();
+
+
+
+        // Sequential Execution
+
+        primeThread.start();
+
+        try {
+
+            primeThread.join();  // Wait for primeThread to finish
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+
+
+        palindromeThread.start();
+
+        try {
+
+            palindromeThread.join();  // Wait for palindromeThread to finish
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+}
+
+
+
+ 
+
+
+
+Parallel Thread Execution:
+
+public class ParallelThreads {
+
+    public static void main(String[] args) {
+
+        // Creating both threads
+
+        PrimeThread primeThread = new PrimeThread();
+
+        PalindromeThread palindromeThread = new PalindromeThread();
+
+
+
+        // Parallel Execution
+
+        primeThread.start();
+
+        palindromeThread.start();
+
+
+
+        // Wait for both threads to complete
+
+        try {
+
+            primeThread.join();
+
+            palindromeThread.join();
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+}
+
+#AIM
+
+Use multi-threading to calculate sum of 10 thousand integers in Java
+
+using Synchronized keywords.
+
+Theory/Procedure/Algorithm
+_____________
+
+class SumCalculator {
+
+    private int sum = 0;
+
+
+
+    // Method to add to sum using a synchronized block
+
+    public void addToSum(int value) {
+
+        synchronized (this) {
+
+            sum += value;
+
+        }
+
+    }
+
+
+
+    public int getSum() {
+
+        return sum;
+
+    }
+
+}
+
+
+
+class SumThread extends Thread {
+
+    private int[] numbers;
+
+    private SumCalculator calculator;
+
+
+
+    public SumThread(int[] numbers, SumCalculator calculator) {
+
+        this.numbers = numbers;
+
+        this.calculator = calculator;
+
+    }
+
+
+
+    @Override
+
+    public void run() {
+
+        for (int number : numbers) {
+
+            calculator.addToSum(number);
+
+        }
+
+    }
+
+}
+
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        // Create an array of 10,000 integers
+
+        int[] numbers = new int[10000];
+
+        for (int i = 0; i < numbers.length; i++) {
+
+            numbers[i] = i + 1;
+
+        }
+
+
+
+        // Create the shared SumCalculator instance
+
+        SumCalculator calculator = new SumCalculator();
+
+
+
+        // Split the array into four parts for four threads
+
+        int[] part1 = new int[2500];
+
+        int[] part2 = new int[2500];
+
+        int[] part3 = new int[2500];
+
+        int[] part4 = new int[2500];
+
+
+
+        System.arraycopy(numbers, 0, part1, 0, 2500);
+
+        System.arraycopy(numbers, 2500, part2, 0, 2500);
+
+        System.arraycopy(numbers, 5000, part3, 0, 2500);
+
+        System.arraycopy(numbers, 7500, part4, 0, 2500);
+
+
+
+        // Create four threads to calculate the sum
+
+        SumThread thread1 = new SumThread(part1, calculator);
+
+        SumThread thread2 = new SumThread(part2, calculator);
+
+        SumThread thread3 = new SumThread(part3, calculator);
+
+        SumThread thread4 = new SumThread(part4, calculator);
+
+
+
+        // Start the threads
+
+        thread1.start();
+
+        thread2.start();
+
+        thread3.start();
+
+        thread4.start();
+
+
+
+        // Wait for all threads to finish
+
+        try {
+
+            thread1.join();
+
+            thread2.join();
+
+            thread3.join();
+
+            thread4.join();
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+
+
+        // Print the final sum
+
+        System.out.println("The sum is: " + calculator.getSum());
+
+    }
+
+}
+
+#
+
+To write a Java program that demonstrates multithreading with two threads: one thread taking user input and another thread printing on the console.
+Procedure:
+
+1.	Create a custom thread class that extends the Thread class.
+
+2.	Implement the run() method in the custom thread class to print a message repeatedly.
+
+3.	In the main class, create an instance of the custom thread and start it.
+
+4.	Use the main thread to wait for user input.
+
+5.	Once input is received, signal the child thread to stop printing.
+
+Algorithm:
+
+1.	Define a custom thread class (GeeksForGeeks) extending Thread 
+
+2.	Initialize with a message to print
+
+3.	Implement run() method to print the message in a loop
+
+4.	In the main class: 
+
+5.	Create a static boolean variable 'start' initialized to true
+
+6.	Create and start an instance of the custom thread
+
+7.	Wait for user input using Scanner
+
+8.	Once input is received, set 'start' to false to stop the child thread
+
+                                                        Implementation
+import java.util.Scanner;
+
+import java.util.concurrent.CountDownLatch;
+
+
+
+class PrintThread extends Thread {
+
+    private final String message;
+
+    private final CountDownLatch latch;
+
+
+
+    PrintThread(String message, CountDownLatch latch) {
+
+        this.message = message;
+
+        this.latch = latch;
+
+    }
+
+
+
+    public void run() {
+
+        try {
+
+            while (!Thread.currentThread().isInterrupted()) {
+
+                System.out.println(this.message);
+
+                if (latch.await(1, java.util.concurrent.TimeUnit.SECONDS)) {
+
+                    break;
+
+                }
+
+            }
+
+        } catch (InterruptedException e) {
+
+            // Thread was interrupted, exit the loop
+
+        }
+
+        System.out.println("PrintThread stopped.");
+
+    }
+
+}
+
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        PrintThread printThread = new PrintThread("Printing message...", latch);
+
+        printThread.start();
+
+
+
+  Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Press Enter to stop the printing thread.");
+
+        scanner.nextLine();
+
+
+
+        latch.countDown(); // Signal the print thread to stop
+
+   try {
+
+            printThread.join(2000); // Wait up to 2 seconds for the print thread to finish
+
+            if (printThread.isAlive()) {
+
+                printThread.interrupt(); // Interrupt if it's still running
+
+                printThread.join(1000); // Give it one more second to finish
+
+            }
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+
+
+        System.out.println("Program terminated.");
+
+        scanner.close();
+
+    }
+
+}
+
+
+
+######
+
+
+public class MatrixMultiplication {
+
+  private static final int MATRIX_SIZE = 3;
+
+  private static final int NUM_THREADS = 2;
+
+
+
+  public static void main(String[] args) {
+
+    int[][] matrix1 = {
+
+      {        1,        2,        3      },
+
+      {        4,        5,        6      },
+
+      {        7,        8,        9      }
+
+    };
+
+
+
+    int[][] matrix2 = {
+
+      {        9,        8,        7      },
+
+      {        6,        5,        4      },
+
+      {        3,        2,        1      }
+
+    };
+
+
+
+    int[][] result = new int[MATRIX_SIZE][MATRIX_SIZE];
+
+
+
+    Thread[] threads = new Thread[NUM_THREADS];
+
+    int segmentSize = MATRIX_SIZE / NUM_THREADS;
+
+
+
+    for (int i = 0; i < NUM_THREADS; i++) {
+
+      int startIndex = i * segmentSize;
+
+      int endIndex = (i == NUM_THREADS - 1) ? MATRIX_SIZE - 1 : (startIndex + segmentSize - 1);
+
+      threads[i] = new Thread(new MultiplicationTask(matrix1, matrix2, result, startIndex, endIndex));
+
+      threads[i].start();
+
+    }
+
+
+
+    for (Thread thread: threads) {
+
+      try {
+
+        thread.join();
+
+      } catch (InterruptedException e) {
+
+        e.printStackTrace();
+
+      }
+
+    }
+
+
+
+    // Print the result matrix
+
+    System.out.println("Result:");
+
+    for (int[] row: result) {
+
+      for (int element: row) {
+
+        System.out.print(element + " ");
+
+      }
+
+      System.out.println();
+
+    }
+
+  }
+
+
+
+  static class MultiplicationTask implements Runnable {
+
+    private int[][] matrix1;
+
+    private int[][] matrix2;
+
+    private int[][] result;
+
+    private int startIndex;
+
+    private int endIndex;
+
+
+
+    public MultiplicationTask(int[][] matrix1, int[][] matrix2, int[][] result, int startIndex, int endIndex) {
+
+      this.matrix1 = matrix1;
+
+      this.matrix2 = matrix2;
+
+      this.result = result;
+
+      this.startIndex = startIndex;
+
+      this.endIndex = endIndex;
+
+    }
+
+
+
+    @Override
+
+    public void run() {
+
+      int cols = matrix2[0].length;
+
+
+
+      for (int i = startIndex; i <= endIndex; i++) {
+
+        for (int j = 0; j < cols; j++) {
+
+          for (int k = 0; k < MATRIX_SIZE; k++) {
+
+            result[i][j] += matrix1[i][k] * matrix2[k][j];
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+ 
